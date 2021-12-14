@@ -1,5 +1,177 @@
 # unregistry
 
+# run
+
+given configuration:
+
+```console
+ ~  λ  cat config.yml
+log:
+  level: info
+telemetry:
+  enable: true
+registry:
+  provider:
+    type: local
+    local:
+      containers:
+        "hello/world:latest": ./test-container
+```
+
+where `test-container` is an extracted `tar.gz` archive which could be obtained via `docker save`:
+
+```console
+ ~  λ  find test-container/
+test-container/
+test-container/12218f14a86f27ee6af1c158609ba87528960ab309c8c142f5ddaf74bb270e62
+test-container/12218f14a86f27ee6af1c158609ba87528960ab309c8c142f5ddaf74bb270e62/layer.tar
+test-container/16ee9419055f6de42a0b26b4dc7059dd923def5b29c7ca37ce13fb3dcdde3da0
+test-container/16ee9419055f6de42a0b26b4dc7059dd923def5b29c7ca37ce13fb3dcdde3da0/layer.tar
+test-container/1b428a65bb881fe498277e6e084122a116e78060d2f6415853888133af594629
+test-container/1b428a65bb881fe498277e6e084122a116e78060d2f6415853888133af594629/layer.tar
+test-container/1dcbe7cc4dfaff4e38933e8ce45e125e5c4f008c6b61be04ab38ad07ec192264
+test-container/1dcbe7cc4dfaff4e38933e8ce45e125e5c4f008c6b61be04ab38ad07ec192264/layer.tar
+test-container/24d6248a1de40282096b99dd15c85c7f8ccd39dfef239a163c6117e0e0e29040
+test-container/24d6248a1de40282096b99dd15c85c7f8ccd39dfef239a163c6117e0e0e29040/layer.tar
+test-container/2972febd87be558e7e2dcdc318dacd0384ad781b8e61db34d1249c4659ca681d
+test-container/2972febd87be558e7e2dcdc318dacd0384ad781b8e61db34d1249c4659ca681d/layer.tar
+test-container/3487623b8c90af7259634a7b0b2b2ec9c446b3e834303d917ba987c165e15deb
+test-container/3487623b8c90af7259634a7b0b2b2ec9c446b3e834303d917ba987c165e15deb/layer.tar
+test-container/35c5a7da5e6a359c02cdf6761504eb9801385694fd7be2b4979e2b9dbf0c17b8
+test-container/35c5a7da5e6a359c02cdf6761504eb9801385694fd7be2b4979e2b9dbf0c17b8/layer.tar
+test-container/3a45848f97f63c92e15371d74131322edf30e7e8f45b2388e57706ac472a27d3
+test-container/3a45848f97f63c92e15371d74131322edf30e7e8f45b2388e57706ac472a27d3/layer.tar
+test-container/3dada2fc74d1a37f5aa47d329b4fff0d78a5faccffd1399a3148733985ca51f4
+test-container/3dada2fc74d1a37f5aa47d329b4fff0d78a5faccffd1399a3148733985ca51f4/layer.tar
+test-container/427f4a28069f6ee280e7e2a7afedffcdbdcd650732f8334e41982154eb2c0056
+test-container/427f4a28069f6ee280e7e2a7afedffcdbdcd650732f8334e41982154eb2c0056/layer.tar
+test-container/4e2859ffc472bfbdb82820a226a947446975d202d63ef89d4ffb0ee3d8a08e6c
+test-container/4e2859ffc472bfbdb82820a226a947446975d202d63ef89d4ffb0ee3d8a08e6c/layer.tar
+test-container/5663c621f8d405d1ed3556f4407332b4d7059054255fa81f5011228a6bd4c882
+test-container/5663c621f8d405d1ed3556f4407332b4d7059054255fa81f5011228a6bd4c882/layer.tar
+test-container/59f273118efda76adcf67a737762c7666fbc7117492ec6b027ce6d54724276e5
+test-container/59f273118efda76adcf67a737762c7666fbc7117492ec6b027ce6d54724276e5/layer.tar
+test-container/6004a9e93c1319b7e9ebba2563ac8ead3237fcf67f5bdd63da39850a361bf28a
+test-container/6004a9e93c1319b7e9ebba2563ac8ead3237fcf67f5bdd63da39850a361bf28a/layer.tar
+test-container/656854f5a7a31e7f6d64770943af184fedf31c4966caa993604799e7b985d5b1
+test-container/656854f5a7a31e7f6d64770943af184fedf31c4966caa993604799e7b985d5b1/layer.tar
+test-container/693567519aab2e24c14937c0831d007e69541f4886609bf7f8677172e2b102be
+test-container/693567519aab2e24c14937c0831d007e69541f4886609bf7f8677172e2b102be/layer.tar
+test-container/72f1e4e979465c7369c63d82f374383074c57c7a84effb65ec7e567e5ec0c072
+test-container/72f1e4e979465c7369c63d82f374383074c57c7a84effb65ec7e567e5ec0c072/layer.tar
+test-container/768d75c70bd8270dd1cd51ff729674ac8a6749e79b8d90174586f90abdd4e6e1
+test-container/768d75c70bd8270dd1cd51ff729674ac8a6749e79b8d90174586f90abdd4e6e1/layer.tar
+test-container/799e20c1a92b82a582870c93218b550594c056b30e7b8dcbcd7ad71ad94b088d
+test-container/799e20c1a92b82a582870c93218b550594c056b30e7b8dcbcd7ad71ad94b088d/layer.tar
+test-container/7d33a582235e23a0aaf64dcb1b9e5d19d622ab8c7d09441de58aaab0df5a4050
+test-container/7d33a582235e23a0aaf64dcb1b9e5d19d622ab8c7d09441de58aaab0df5a4050/layer.tar
+test-container/82559b00ce5f0933d2e7ee76abd3a3f8b4336b26510660af37d8002b7234fa00
+test-container/82559b00ce5f0933d2e7ee76abd3a3f8b4336b26510660af37d8002b7234fa00/layer.tar
+test-container/834aa38876873169d94e2f4425db9adab4a230eddf397080d70f630eb6db54d9
+test-container/834aa38876873169d94e2f4425db9adab4a230eddf397080d70f630eb6db54d9/layer.tar
+test-container/85f559de96e3b245a02f59b706a7ab6649097a66d5662938306258124d22b813
+test-container/85f559de96e3b245a02f59b706a7ab6649097a66d5662938306258124d22b813/layer.tar
+test-container/8761841520b1e14652c0a64d0d09733edb8ba2c27c7a0e03c9ab606e92907994
+test-container/8761841520b1e14652c0a64d0d09733edb8ba2c27c7a0e03c9ab606e92907994/layer.tar
+test-container/a7794ff0c3801ae8f2b13737c2873d98e9d0d46fb03231538ed36f782df2a37c
+test-container/a7794ff0c3801ae8f2b13737c2873d98e9d0d46fb03231538ed36f782df2a37c/layer.tar
+test-container/a82d99ca9046d44d71f3254b2eee8a837914ca3b5a64998f360cc4280f567c46
+test-container/a82d99ca9046d44d71f3254b2eee8a837914ca3b5a64998f360cc4280f567c46/layer.tar
+test-container/a892367d51eae5cd0873bd5baca826f385a8f74701feda933d4b8b82e75f1fc9
+test-container/a892367d51eae5cd0873bd5baca826f385a8f74701feda933d4b8b82e75f1fc9/layer.tar
+test-container/aa5831301bcf9e75b016002b66351d90b161e5981a3c1627e337679a5b050820
+test-container/aa5831301bcf9e75b016002b66351d90b161e5981a3c1627e337679a5b050820/layer.tar
+test-container/b4b6ac79d07037d4a520614b720851b56369ba843537c9af7718428faed1a17e
+test-container/b4b6ac79d07037d4a520614b720851b56369ba843537c9af7718428faed1a17e/layer.tar
+test-container/b7d2445b72a722cb425c5b6aed2acd589dd60f34b54e8f40578df90327c6109f
+test-container/b7d2445b72a722cb425c5b6aed2acd589dd60f34b54e8f40578df90327c6109f/layer.tar
+test-container/c69254d2737f3ae4c41e26c2b815388218b28e6e7b7ff89a668c04a7d9d1150a
+test-container/c69254d2737f3ae4c41e26c2b815388218b28e6e7b7ff89a668c04a7d9d1150a/layer.tar
+test-container/c970f1a8a61d4c5539a9e201dfa2a6982195769c64e4591651fa09909c002e29
+test-container/c970f1a8a61d4c5539a9e201dfa2a6982195769c64e4591651fa09909c002e29/layer.tar
+test-container/cc9ea5d1c355829625a28a2839e5866b849a66e663fb3eee3267d8ec442fac8c
+test-container/cc9ea5d1c355829625a28a2839e5866b849a66e663fb3eee3267d8ec442fac8c/layer.tar
+test-container/d59baf1adaf75eec9d2be2bab41b6fd8355453ee3fa24abe09882f7aee77420c
+test-container/d59baf1adaf75eec9d2be2bab41b6fd8355453ee3fa24abe09882f7aee77420c/layer.tar
+test-container/d6d821bf0c9e37fe989e0294b55a9e979aed76f358a9d6cbab16425dfb8e9f29
+test-container/d6d821bf0c9e37fe989e0294b55a9e979aed76f358a9d6cbab16425dfb8e9f29/layer.tar
+test-container/e122dbd8dd92eb558d9258d5eeae2e0caefbf26ef176289fc464b9633b0a13c9
+test-container/e122dbd8dd92eb558d9258d5eeae2e0caefbf26ef176289fc464b9633b0a13c9/layer.tar
+test-container/e17747b4fe99349c5086ed2e55fe0cac201943900e013ade83fc2354caf401d7
+test-container/e17747b4fe99349c5086ed2e55fe0cac201943900e013ade83fc2354caf401d7/layer.tar
+test-container/e51f5c8a8344ec8df1382a436a7ce58ccd0f49c8280f0ee541deefdab70d730e
+test-container/e51f5c8a8344ec8df1382a436a7ce58ccd0f49c8280f0ee541deefdab70d730e/layer.tar
+test-container/f81b623ce4f122e998bdfc97cc385c8aaad5a89720591e01497398f36eaf13c9
+test-container/f81b623ce4f122e998bdfc97cc385c8aaad5a89720591e01497398f36eaf13c9/layer.tar
+test-container/fc3ba28ea98b92a4ce6548e2b215577d2fcec1af5cb55bba121b6815b16e6491
+test-container/fc3ba28ea98b92a4ce6548e2b215577d2fcec1af5cb55bba121b6815b16e6491/layer.tar
+test-container/fec04d4d1aab7ab99222649cc71691a364485727531cb2c8570f65b17900daac
+test-container/fec04d4d1aab7ab99222649cc71691a364485727531cb2c8570f65b17900daac/layer.tar
+test-container/manifest.json
+test-container/206cb8a3fedb42c8b0ef721c7182b628e1563d7470a19dfab665c1cb213ed32e.json
+```
+
+run registry:
+
+```console
+ ~  λ  go run ./main.go
+3:09PM ??? ⇨ http server started on 127.0.0.1:4280 component=telemetry listener=127.0.0.1:4280 pgid=99776 pid=99868 ppid=99776
+3:09PM ??? ⇨ http server started on 127.0.0.1:5000 component=registry listener=127.0.0.1:5000 pgid=99776 pid=99868 ppid=99776
+3:09PM INF running pgid=99776 pid=99868 ppid=99776
+```
+
+```console
+ ~  λ  docker pull 127.0.0.1:5000/hello/world:latest
+latest: Pulling from hello/world
+e122dbd8dd92: Pull complete
+b4b6ac79d070: Pull complete
+85f559de96e3: Pull complete
+1b428a65bb88: Pull complete
+2972febd87be: Pull complete
+7d33a582235e: Pull complete
+f81b623ce4f1: Pull complete
+a892367d51ea: Pull complete
+8761841520b1: Pull complete
+834aa3887687: Pull complete
+fc3ba28ea98b: Pull complete
+427f4a28069f: Pull complete
+24d6248a1de4: Pull complete
+16ee9419055f: Pull complete
+1dcbe7cc4dfa: Pull complete
+cc9ea5d1c355: Pull complete
+799e20c1a92b: Pull complete
+35c5a7da5e6a: Pull complete
+72f1e4e97946: Pull complete
+82559b00ce5f: Pull complete
+12218f14a86f: Pull complete
+3a45848f97f6: Pull complete
+4e2859ffc472: Pull complete
+fec04d4d1aab: Pull complete
+aa5831301bcf: Pull complete
+d6d821bf0c9e: Pull complete
+656854f5a7a3: Pull complete
+693567519aab: Pull complete
+c69254d2737f: Pull complete
+c970f1a8a61d: Pull complete
+e17747b4fe99: Pull complete
+a7794ff0c380: Pull complete
+3dada2fc74d1: Pull complete
+59f273118efd: Pull complete
+768d75c70bd8: Pull complete
+a82d99ca9046: Pull complete
+6004a9e93c13: Pull complete
+5663c621f8d4: Pull complete
+b7d2445b72a7: Pull complete
+d59baf1adaf7: Pull complete
+3487623b8c90: Pull complete
+e51f5c8a8344: Pull complete
+Digest: sha256:c977012ad12253bac01a190ec9ae5e34de228da885ccc31650702705ce0775ac
+Status: Downloaded newer image for 127.0.0.1:5000/hello/world:latest
+127.0.0.1:5000/hello/world:latest
+```
+
+you should see container in `docker images` now.
+
 ## development
 
 - make sure you have `git`, `make`, `go`, `nix`
