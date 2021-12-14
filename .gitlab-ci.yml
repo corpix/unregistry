@@ -1,0 +1,32 @@
+---
+image: nixos/nix:latest
+
+test:
+  stage: test
+  script:
+    - nix-shell --run "set -e; make lint test"
+
+##
+
+build:
+  stage: build
+  artifacts: {paths: [main-linux-amd64]}
+  script:
+    - nix-shell --run "set -e; make build os=linux binary=main-linux-amd64 version=$CI_COMMIT_SHA"
+
+##
+
+container:
+  stage: release
+  rules:
+    - if: $CI_COMMIT_TAG
+  script: >-
+    nix-shell --run "
+      set -e;
+      make nix/build/container version=$CI_COMMIT_SHA container_tag=$CI_COMMIT_TAG;
+      make nix/push/container  docker_user=$CI_REGISTRY_USER docker_password=$CI_REGISTRY_PASSWORD container_tag=$CI_COMMIT_TAG
+    "
+
+stages:
+  - test
+  - build

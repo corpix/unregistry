@@ -1,0 +1,30 @@
+global:
+  scrape_interval: 15s
+  scrape_timeout: 10s
+  evaluation_interval: 15s
+alerting:
+  alertmanagers:
+  - scheme: http
+    timeout: 10s
+    api_version: v1
+    static_configs:
+    - targets: []
+scrape_configs:
+- job_name: batch-ingest
+  honor_timestamps: true
+  scrape_interval: 5s
+  scrape_timeout: 5s
+  metrics_path: /
+  scheme: http
+  static_configs:
+  - targets:
+    - localhost:8877
+- job_name: clickhouse
+  honor_timestamps: true
+  scrape_interval: 5s
+  scrape_timeout: 5s
+  metrics_path: /
+  scheme: http
+  static_configs:
+  - targets:
+    - localhost:8001

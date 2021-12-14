@@ -1,0 +1,10 @@
+log:
+  level: info
+telemetry:
+  enable: true
+registry:
+  provider:
+    type: local
+    local:
+      containers:
+        "hello/world:latest": ./test-container
